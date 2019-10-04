@@ -15,6 +15,7 @@
 //SSID and Password of your WiFi router
 const char* ssid = "ASUS610";
 const char* password = "12660123";
+unsigned char Lamps[6] = {5,11,50,60,70,90};
  
 ESP8266WebServer server(80); //Server on port 80
  
@@ -29,15 +30,22 @@ void handleRoot() {
 //===============================================================
 // This routine is executed when you press submit
 //===============================================================
-void handleForm() {
- String firstName = server.arg("firstname"); 
- String lastName = server.arg("lastname"); 
- String lvalue = server.arg("lvalue"); 
- 
- Serial.print("s 2 1 "+lvalue+"\r");
+void handleSetControls() {
+ String WCValue = server.arg("WCValue"); 
+ Serial.print("WCValue=");
+ Serial.println(WCValue);
 
- String s = "<a href='/'> Go Back </a>";
- server.send(200, "text/html", s); //Send web page
+ //String s = "<a href='/'> Go Back </a>";
+ server.send(200, "text/html", ""); //Send web page
+}
+
+void getParams() {
+ String Params = "";
+ int i;
+ for (i=0; i<6; i++)
+  Params = Params + String(Lamps[i]) + " ";
+ 
+ server.send(200, "text/plane", Params); //Send web page
 }
 
 void handleSetParams() {
@@ -70,15 +78,18 @@ void handleLED() {
 }
 
 void handleSetLamps() {
- String color = server.arg("color");
- String power = server.arg("power");
- Serial.println("In handleSetLamps()...");
- if(color == "wc")
- {
-   Serial.print("wc=");
-   Serial.println(power);
- }
- //server.send(200, "text/plane", color); //Send web page
+ String wc = server.arg("wc");
+ String ww = server.arg("ww");
+ String r = server.arg("r");
+ String g = server.arg("g");
+ String b = server.arg("b");
+ String uv = server.arg("uv");
+ String s;
+
+  s = wc + " " + ww + " " + r + " " + g + " " + b + " " + uv;
+ Serial.print("Lamp parameters: ");
+ Serial.println(s);
+ server.send(200, "text/plane", s); //Send web page
 }
 
 //==============================================================
@@ -116,10 +127,10 @@ void setup(void){
 #endif
  
   server.on("/", handleRoot);      //Which routine to handle at root location. This is display page
-  server.on("/action_page", handleForm); //form action is handled here
   server.on("/setLED", handleLED);
-  server.on("/set_params", handleSetParams);
+  server.on("/set_controls", handleSetControls); //form action is handled here
   server.on("/setLamps", handleSetLamps);
+  server.on("/getParams", getParams);
  
   server.begin();                  //Start server
 #if DEBUGPROG

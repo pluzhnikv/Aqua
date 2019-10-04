@@ -94,28 +94,29 @@ body, html {
 <div id="Control" class="tabcontent">
   <h3>Управление</h3>
   <p>Светодиодные лампы:</p>
-  <form action="/set_params">
   <div class="slidecontainer">
   <p><div id="rectangle" style="background: #FFFFFF"></div>
-  <input type="range" name="WCValue" min="1" max="100" value="50" class="slider" id="WCRange">
+  <input type="range" name="WCValue" min="1" max="100" class="slider" id="WCRange">
   <span id="WCV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <p><div id="rectangle" style="background: #FFFF99"></div>
-  <input type="range"  name="WWValue" min="1" max="100" value="50" class="slider" id="WWRange">
+  <input type="range"  name="WWValue" min="1" max="100" class="slider" id="WWRange">
   <span id="WWV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <p><div id="rectangle" style="background: #FF0000"></div>
-  <input type="range"  name="RedValue" min="1" max="100" value="50" class="slider" id="RedRange">
+  <input type="range"  name="RedValue" min="1" max="100" class="slider" id="RedRange">
   <span id="RedV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <p><div id="rectangle" style="background: #00FF00"></div>
-  <input type="range"  name="GreenValue" min="1" max="100" value="50" class="slider" id="GreenRange">
+  <input type="range"  name="GreenValue" min="1" max="100" class="slider" id="GreenRange">
   <span id="GreenV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <p><div id="rectangle" style="background: #0000FF"></div>
-  <input type="range"  name="BlueValue" min="1" max="100" value="50" class="slider" id="BlueRange">
+  <input type="range"  name="BlueValue" min="1" max="100" class="slider" id="BlueRange">
   <span id="BlueV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <p><div id="rectangle" style="background: #9900FF"></div>
-  <input type="range"  name="UVValue" min="1" max="100" value="50" class="slider" id="UVRange">
+  <input type="range"  name="UVValue" min="1" max="100" class="slider" id="UVRange">
   <span id="UVV" style="color:black; font-size:150%; vertical-align: top;"></span></p>
   <br>
-  <input type="submit" value="Применить">
+  <button type="button" onclick="sendLampsData()">Применить</button>
+  <br>
+  Return from server : <span id="ServerText">NA</span><br>
   </form>
 </div>
 </div>
@@ -161,20 +162,13 @@ var output4 = document.getElementById("GreenV");
 var output5 = document.getElementById("BlueV");
 var output6 = document.getElementById("UVV");
 
-output1.innerHTML = WCslider.value;
-output2.innerHTML = WWslider.value;
-output3.innerHTML = Redslider.value;
-output4.innerHTML = Greenslider.value;
-output5.innerHTML = Blueslider.value;
-output6.innerHTML = UVslider.value;
+GetVFunction();
 
 WCslider.oninput = function() {
   output1.innerHTML = this.value;
-  <!-- sendLampsData("wc", this.value); -->
 }
 WWslider.oninput = function() {
   output2.innerHTML = this.value;
-  sendLampsData("ww", this.value);
 }
 Redslider.oninput = function() {
   output3.innerHTML = this.value;
@@ -189,15 +183,40 @@ UVslider.oninput = function() {
   output6.innerHTML = this.value;
 }
 
-function sendLampsData(color, power) {
+function sendLampsData() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      document.getElementById("LEDState").innerHTML =
+      document.getElementById("ServerText").innerHTML =
       this.responseText;
     }
   };
-  xhttp.open("GET", "setLamps?color="+color+"&power="+power, true);
+  xhttp.open("GET", "setLamps?wc="+WCslider.value+"&ww="+WWslider.value+"&r="+Redslider.value+"&g="+Greenslider.value+"&b="+Blueslider.value+"&uv="+UVslider.value, true);
+  xhttp.send();
+}
+
+function GetVFunction() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var s = this.responseText;
+      document.getElementById("ServerText").innerHTML = s;
+      var arr = s.split(" ");
+      WCslider.value = arr[0];
+      WWslider.value = arr[1];
+      Redslider.value = arr[2]; 
+      Greenslider.value = arr[3]; 
+      Blueslider.value = arr[4]; 
+      UVslider.value = arr[5];
+      output1.innerHTML = arr[0];
+      output2.innerHTML = arr[1];
+      output3.innerHTML = arr[2];
+      output4.innerHTML = arr[3];
+      output5.innerHTML = arr[4];
+      output6.innerHTML = arr[5];
+    }
+  };
+  xhttp.open("GET", "getParams", true);
   xhttp.send();
 }
 
