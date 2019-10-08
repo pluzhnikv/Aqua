@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<!--    General CSS-->
+    <!--General CSS-->
     <style>
         * {
             box-sizing: border-box
@@ -55,12 +55,37 @@
 
     <!--Slider CSS-->
     <style>
-        input.white { --color: #e0e0e0 }
-        input.yellow { --color: #fff176}
-        input.red { --color: #f44336 }
-        input.green { --color: #4caf50 }
-        input.blue { --color: #2196f3 }
-        input.uv { --color: #7f1ae5 }
+        .slider-wrapper.white {
+            --color: #ffffff
+        }
+
+        .slider-wrapper.yellow {
+            --color: #fff176
+        }
+
+        .slider-wrapper.red {
+            --color: #f44336
+        }
+
+        .slider-wrapper.green {
+            --color: #4caf50
+        }
+
+        .slider-wrapper.blue {
+            --color: #2196f3
+        }
+
+        .slider-wrapper.uv {
+            --color: #7f1ae5
+        }
+
+        .slider-wrapper {
+            position: relative;
+        }
+
+        #slidersContainer {
+            margin: 30px;
+        }
 
         input[type=range] {
             -webkit-appearance: none;
@@ -158,6 +183,27 @@
         input[type=range]:focus::-ms-fill-upper {
             background: var(--color, gray);
         }
+
+        output {
+            position: absolute;
+            top: -30px;
+            left: calc(50% - 25px);
+            display: none;
+            width: 50px;
+            height: 25px;
+            border: 1px solid black;
+            background-color: var(--color, gray);
+            border-radius: 5px;
+            color: black;
+            font-size: 12px;
+            line-height: 25px;
+            text-align: center;
+        }
+
+        input[type=range]:active + output {
+            display: block;
+        }
+
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Aquarium management</title>
@@ -173,13 +219,31 @@
 <div class="tab-content">
     <div id="control" class="active">
         <h4>Светодиодные лампы:</h4>
-        <div>
-            <input type="range" min="0" max="100" id="wc" class="white">
-            <input type="range" min="0" max="100" id="ww" class="yellow">
-            <input type="range" min="0" max="100" id="r" class="red">
-            <input type="range" min="0" max="100" id="g" class="green">
-            <input type="range" min="0" max="100" id="b" class="blue">
-            <input type="range" min="0" max="100" id="uv" class="uv">
+        <div id="slidersContainer">
+            <div class="slider-wrapper white">
+                <input type="range" min="0" max="100" id="wc">
+                <output name="wc"></output>
+            </div>
+            <div class="slider-wrapper yellow">
+                <input type="range" min="0" max="100" id="ww">
+                <output name="ww"></output>
+            </div>
+            <div class="slider-wrapper red">
+                <input type="range" min="0" max="100" id="r">
+                <output name="r"></output>
+            </div>
+            <div class="slider-wrapper green">
+                <input type="range" min="0" max="100" id="g">
+                <output name="g"></output>
+            </div>
+            <div class="slider-wrapper blue">
+                <input type="range" min="0" max="100" id="b">
+                <output name="b"></output>
+            </div>
+            <div class="slider-wrapper uv">
+                <input type="range" min="0" max="100" id="uv">
+                <output name="uv"></output>
+            </div>
 
             <div class="server-text-wrapper">Server response: <span id="serverText">NA</span></div>
         </div>
@@ -248,6 +312,16 @@
     allTabsContent.forEach((tabContent) => tabContent.classList.remove('active'));
     activeTabContent.classList.add('active');
   }
+
+  document.getElementById('slidersContainer').addEventListener('input', (event) => {
+    const inputElement = event.target;
+    const inputWidth = inputElement.offsetWidth;
+    const value = inputElement.value;
+
+    const output = document.querySelector(`output[name=${inputElement.id}]`);
+    output.innerHTML = value;
+    output.style.left = `calc(${value}% - ${value / 2}px)`;
+  });
 </script>
 </body>
 </html>
