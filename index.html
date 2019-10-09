@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!--General CSS-->
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, serif;
+            text-align: center;
+        }
+
+        .tabs-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            text-align: center;
+            min-height: 48px;
+            background-color: #1976d2;
+            color: #fff;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        .tab {
+            flex: 1;
+            opacity: 0.7;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab.active {
+            opacity: 1;
+            border-bottom: 2px solid #dc004e;
+        }
+
+        .tab-content > div {
+            display: none;
+            margin: 10px;
+        }
+
+        .tab-content > div.active {
+            display: block;
+        }
+
+        .server-text-wrapper {
+
+        }
+    </style>
+
+    <!--Slider CSS-->
+    <style>
+        .slider-wrapper.white {
+            --color: #ffffff
+        }
+
+        .slider-wrapper.yellow {
+            --color: #fff176
+        }
+
+        .slider-wrapper.red {
+            --color: #f44336
+        }
+
+        .slider-wrapper.green {
+            --color: #4caf50
+        }
+
+        .slider-wrapper.blue {
+            --color: #2196f3
+        }
+
+        .slider-wrapper.uv {
+            --color: #7f1ae5
+        }
+
+        .slider-wrapper {
+            position: relative;
+        }
+
+        #slidersContainer {
+            margin: 30px;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            margin: 18px 0;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+            background: var(--color, gray);
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 36px;
+            width: 16px;
+            border-radius: 3px;
+            background: var(--color, gray);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -14px;
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background: var(--color, gray);
+        }
+
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+            background: var(--color, gray);
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        input[type=range]::-moz-range-thumb {
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 36px;
+            width: 16px;
+            border-radius: 3px;
+            background: var(--color, gray);
+            cursor: pointer;
+        }
+
+        input[type=range]::-ms-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        input[type=range]::-ms-fill-lower {
+            background: var(--color, gray);
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+        }
+
+        input[type=range]::-ms-fill-upper {
+            background: var(--color, gray);
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+        }
+
+        input[type=range]::-ms-thumb {
+            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 36px;
+            width: 16px;
+            border-radius: 3px;
+            background: var(--color, gray);
+            cursor: pointer;
+        }
+
+        input[type=range]:focus::-ms-fill-lower {
+            background: var(--color, gray);
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background: var(--color, gray);
+        }
+
+        output {
+            position: absolute;
+            top: -30px;
+            left: calc(50% - 25px);
+            display: none;
+            width: 50px;
+            height: 25px;
+            border: 1px solid black;
+            background-color: var(--color, gray);
+            border-radius: 5px;
+            color: black;
+            font-size: 12px;
+            line-height: 25px;
+            text-align: center;
+        }
+
+        input[type=range]:active + output {
+            display: block;
+        }
+
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Aquarium management</title>
+</head>
+<body>
+
+<div class="tabs-container">
+    <div class="tab active" onclick="openPage('control', this)"><span>Управление</span></div>
+    <div class="tab" onclick="openPage('params', this)"><span>Параметры</span></div>
+    <div class="tab" onclick="openPage('about', this)"><span>О программе</span></div>
+</div>
+
+<div class="tab-content">
+    <div id="control" class="active">
+        <h4>Светодиодные лампы:</h4>
+        <div id="slidersContainer">
+            <div class="slider-wrapper white">
+                <input type="range" min="0" max="100" id="wc">
+                <output name="wc"></output>
+            </div>
+            <div class="slider-wrapper yellow">
+                <input type="range" min="0" max="100" id="ww">
+                <output name="ww"></output>
+            </div>
+            <div class="slider-wrapper red">
+                <input type="range" min="0" max="100" id="r">
+                <output name="r"></output>
+            </div>
+            <div class="slider-wrapper green">
+                <input type="range" min="0" max="100" id="g">
+                <output name="g"></output>
+            </div>
+            <div class="slider-wrapper blue">
+                <input type="range" min="0" max="100" id="b">
+                <output name="b"></output>
+            </div>
+            <div class="slider-wrapper uv">
+                <input type="range" min="0" max="100" id="uv">
+                <output name="uv"></output>
+            </div>
+
+            <div class="server-text-wrapper">Server response: <span id="serverText">NA</span></div>
+        </div>
+    </div>
+
+    <div id="params">
+        <h4>Здесь будут параметры аквариума</h4>
+    </div>
+
+    <div id="about">
+        <h4>Who we are and what we do.</h4>
+    </div>
+</div>
+
+
+<script>
+  const serverText = document.getElementById('serverText');
+  let oldParams = getInputsValuesAsQueryParams();
+
+  getParams(); // Get initial params from server
+  let getParamsTimerId = setInterval(getParams, 5e3); // Get params from server every 5 seconds.
+  let setLampsTimerId = setInterval(setLamps, 200); // Get params from server every 5 seconds.
+
+  function getInputs() {
+    return [...document.querySelectorAll('input[type=range]')];
+  }
+
+  function getInputsValuesAsQueryParams() {
+    return getInputs().reduce((params, input) => params + `${input.id}=${input.value}&`, '?').slice(0, -1);
+  }
+
+  async function getParams() {
+    const response = await fetch('getParams');
+    if (!response.ok) {
+      alert('HTTP error: ' + response.status);
+      clearInterval(getParamsTimerId);
+    } // HTTP status is not in range 200-299
+
+    let responseText = await response.text();
+    const responseValues = responseText.split(' ');
+    getInputs().forEach((input, index) => input.value = responseValues[index]);
+    serverText.innerHTML = responseText;
+  }
+
+  async function setLamps() {
+    const newParams = getInputsValuesAsQueryParams();
+    if (oldParams === newParams) return;
+    oldParams = newParams;
+
+    const response = await fetch(`setLamps${newParams}`);
+    if (!response.ok) {
+      alert('HTTP error: ' + response.status);
+      clearInterval(setLampsTimerId);
+    } // HTTP status is not in range 200-299
+
+    serverText.innerHTML = await response.text();
+  }
+
+  function openPage(pageName, element) {
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach((tab) => tab.classList.remove('active'));
+    element.classList.add('active');
+
+    const activeTabContent = document.getElementById(pageName);
+    const allTabsContent = document.querySelectorAll(`.tab-content > div`);
+    allTabsContent.forEach((tabContent) => tabContent.classList.remove('active'));
+    activeTabContent.classList.add('active');
+  }
+
+  document.getElementById('slidersContainer').addEventListener('input', (event) => {
+    const inputElement = event.target;
+    const inputWidth = inputElement.offsetWidth;
+    const value = inputElement.value;
+
+    const output = document.querySelector(`output[name=${inputElement.id}]`);
+    output.innerHTML = value;
+    output.style.left = `calc(${value}% - ${value / 2}px)`;
+  });
+</script>
+</body>
+</html>
