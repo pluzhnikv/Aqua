@@ -1,4 +1,6 @@
-# Aquarium settings 
+# Aquarium settings
+
+This project contains source code of aquarium controller
 
 ## Setup
 Do not edit `index.h` file directly.
