@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Aquarium management</title>
     <!--General CSS-->
     <style>
         * {
@@ -143,47 +145,6 @@
             cursor: pointer;
         }
 
-        input[type=range]::-ms-track {
-            width: 100%;
-            height: 8.4px;
-            cursor: pointer;
-            background: transparent;
-            border-color: transparent;
-            color: transparent;
-        }
-
-        input[type=range]::-ms-fill-lower {
-            background: var(--color, gray);
-            border: 0.2px solid #010101;
-            border-radius: 2.6px;
-            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
-        }
-
-        input[type=range]::-ms-fill-upper {
-            background: var(--color, gray);
-            border: 0.2px solid #010101;
-            border-radius: 2.6px;
-            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
-        }
-
-        input[type=range]::-ms-thumb {
-            box-shadow: 1px 1px 1px #000000, 0 0 1px #0d0d0d;
-            border: 1px solid #000000;
-            height: 36px;
-            width: 16px;
-            border-radius: 3px;
-            background: var(--color, gray);
-            cursor: pointer;
-        }
-
-        input[type=range]:focus::-ms-fill-lower {
-            background: var(--color, gray);
-        }
-
-        input[type=range]:focus::-ms-fill-upper {
-            background: var(--color, gray);
-        }
-
         output {
             position: absolute;
             top: -30px;
@@ -205,8 +166,6 @@
         }
 
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>Aquarium management</title>
 </head>
 <body>
 
@@ -244,6 +203,7 @@
                 <input type="range" min="0" max="100" id="uv">
                 <output name="uv"></output>
             </div>
+            <button type="button" onclick="clearLampsData()">Сбросить</button>
 
             <div class="server-text-wrapper">Server response: <span id="serverText">NA</span></div>
         </div>
@@ -265,7 +225,6 @@
 
   getParams(); // Get initial params from server
   let getParamsTimerId = setInterval(getParams, 5e3); // Get params from server every 5 seconds.
-  let setLampsTimerId = setInterval(setLamps, 200); // Get params from server every 5 seconds.
 
   function getInputs() {
     return [...document.querySelectorAll('input[type=range]')];
@@ -296,10 +255,14 @@
     const response = await fetch(`setLamps${newParams}`);
     if (!response.ok) {
       alert('HTTP error: ' + response.status);
-      clearInterval(setLampsTimerId);
     } // HTTP status is not in range 200-299
 
     serverText.innerHTML = await response.text();
+  }
+
+  function clearLampsData() {
+    getInputs().forEach((input, index) => input.value = 0);
+    setLamps();
   }
 
   function openPage(pageName, element) {
@@ -317,6 +280,7 @@
     const inputElement = event.target;
     const inputWidth = inputElement.offsetWidth;
     const value = inputElement.value;
+    setLamps();
 
     const output = document.querySelector(`output[name=${inputElement.id}]`);
     output.innerHTML = value;
